@@ -8,7 +8,7 @@ Map_Spike:	index *
 		ptr frame_spike_3upwide
 		ptr frame_spike_6upwide
 		ptr frame_spike_1left
-		ptr frame_spike_1upleft
+		ptr frame_spike_1upleft				; JAM: add new subtype sprite
 		
 frame_spike_3up:
 		spritemap					; 3 spikes
@@ -51,8 +51,8 @@ frame_spike_1left:
 		piece	-$10, -4, 4x1, 0
 		endsprite
 		
-frame_spike_1upleft:
-		spritemap					; 1 spike on the left side
+frame_spike_1upleft:						; JAM: add new subtype sprite
+		spritemap					; JAM: 1 spike on the left side
 		piece	-$14, -$10, 1x4, 4
 	;	piece	-4, -$10, 1x4, 4
 	;	piece	$C, -$10, 1x4, 4

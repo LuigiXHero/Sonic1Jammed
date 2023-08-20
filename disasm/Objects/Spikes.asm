@@ -94,17 +94,17 @@ Spike_Hurt:
 		tst.b	(v_invincibility).w			; is Sonic invincible?
 		bne.s	Spike_Display				; if yes, branch
 
-	;	btst 	#bit_SpikeBug,(v_options).w		; spike bug?
-	;	bne.s	@ouchie					; if not, branch
-	;	tst.w	(v_ost_player+ost_sonic_flash_time).w 	; is Sonic invulnerable?
-	;	bne.s	Spike_Display				; if yes, branch
+		btst 	#bit_SpikeBug,(v_options).w		; JAM: Is the spike bug disabled? (in Sonic Jam, it checks if the spindash is enabled)
+		bne.s	@ouchie					; JAM: If not, branch
+		tst.w	(v_ost_player+ost_sonic_flash_time).w 	; JAM: Is Sonic invulnerable?
+		bne.s	Spike_Display				; JAM: If so, branch
 
 @ouchie:
 		move.l	a0,-(sp)				; save OST address for spikes to stack
 		movea.l	a0,a2					; a2 is OST for spikes now
 		lea	(v_ost_player).w,a0			; a0 is temporarily Sonic now
-		tst.w	ost_sonic_flash_time(a0)		; is Sonic invulnerable?
-		bne.s	Spike_Skip_Hurt				; if yes, branch
+		cmpi.b	#id_Sonic_Hurt,ost_routine(a0)		; is Sonic hurt or dead?
+		bcc.s	Spike_Skip_Hurt				; if yes, branch
 		move.l	ost_y_pos(a0),d3
 		move.w	ost_y_vel(a0),d0
 		ext.l	d0

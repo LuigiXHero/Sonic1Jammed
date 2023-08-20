@@ -330,6 +330,8 @@ hitcount_syz:		equ hitcount_all
 hitcount_lz:		equ hitcount_all
 hitcount_slz:		equ hitcount_all
 hitcount_fz:		equ hitcount_all
+hitcount_lz_easy:	equ 3
+hitcount_fz_easy:	equ 3
 
 ; Animation flags
 afEnd:		equ $FF	; return to beginning of animation

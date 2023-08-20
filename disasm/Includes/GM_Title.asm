@@ -319,7 +319,12 @@ PlayLevel:
 		move.b	d0,(v_emeralds).w			; clear emeralds
 		move.l	d0,(v_emerald_list).w			; clear emeralds
 		move.l	d0,(v_emerald_list+4).w			; clear emeralds
-		move.b	d0,(v_continues).w			; clear continues
+		cmpi.b	#1,(v_difficulty).w			; JAM: easy mode?
+		bne.s	@not_easy				; JAM: if not, branch
+		moveq	#3,d0					; JAM: start with 3 continues
+
+	@not_easy:
+		move.b	d0,(v_continues).w			; set continues
 		if Revision=0
 		else
 			move.l	#5000,(v_score_next_life).w	; extra life is awarded at 50000 points

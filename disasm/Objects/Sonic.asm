@@ -38,12 +38,12 @@ Sonic_Main:	; Routine 0
 		move.w	#sonic_acceleration,(v_sonic_acceleration).w ; Sonic's acceleration
 		move.w	#sonic_deceleration,(v_sonic_deceleration).w ; Sonic's deceleration
 
-		moveq	#0,d0			; JAM: Initialize spindash
-		move.w	d0,hscroll_delay.w
-		move.w	d0,vscroll_delay.w
-		btst 	#bit_Spindash,(v_options).w
-		bne.s	Sonic_Control
-		move.b	#$8D,spindash_obj.w
+		moveq	#0,d0					; JAM: Clear scroll delay
+		move.w	d0,(hscroll_delay).w			; JAM
+		move.w	d0,(vscroll_delay).w			; JAM
+		btst 	#bit_Spindash,(v_options).w		; JAM: Is the spindash enabled?
+		bne.s	Sonic_Control				; JAM: If not, branch
+		move.b	#$8D,(spindash_obj).w			; JAM: Load spindash dust object
 
 Sonic_Control:	; Routine 2
 		tst.w	(f_debug_enable).w			; is debug cheat enabled?
@@ -233,9 +233,9 @@ Sonic_Water:
 ; ---------------------------------------------------------------------------
 
 Sonic_Mode_Normal:
-		btst 	#bit_Spindash,(v_options).w		; JAM: Check spindash
-		bne.s	@NoSpindash
-		bsr.w	Sonic_SpinDash
+		btst 	#bit_Spindash,(v_options).w		; JAM: Is the spindash enabled?
+		bne.s	@NoSpindash				; JAM: If not, branch
+		bsr.w	Sonic_SpinDash				; JAM: Check spindash
 
 @NoSpindash:
 		bsr.w	Sonic_Jump
@@ -250,7 +250,6 @@ Sonic_Mode_Normal:
 ; ===========================================================================
 
 Sonic_Mode_Air:
-	;	clr.b	ost_sonic_spindash(a0)
 		bsr.w	Sonic_JumpHeight
 		bsr.w	Sonic_JumpDirection
 		bsr.w	Sonic_LevelBound
@@ -277,7 +276,6 @@ Sonic_Mode_Roll:
 ; ===========================================================================
 
 Sonic_Mode_Jump:
-	;	clr.b	ost_sonic_spindash(a0)
 		bsr.w	Sonic_JumpHeight
 		bsr.w	Sonic_JumpDirection
 		bsr.w	Sonic_LevelBound
@@ -375,12 +373,12 @@ Sonic_LookUp:
 		beq.s	Sonic_Duck				; if not, branch
 		move.b	#id_LookUp,ost_anim(a0)			; use "looking up" animation
 
-		btst 	#bit_Spindash,(v_options).w		; JAM: Handle look up delay
-		bne.s	@NoSpindash
-		addq.w	#1,vscroll_delay.w
-		cmpi.w	#$78,vscroll_delay.w
-		bcs.s	Sonic_ResetScr_Part2
-		move.w	#$78,vscroll_delay.w
+		btst 	#bit_Spindash,(v_options).w		; JAM: Is the spindash eanbled?
+		bne.s	@NoSpindash				; JAM: If not, branch
+		addq.w	#1,(vscroll_delay).w			; JAM: Increment vertical scroll delay counter
+		cmpi.w	#$78,(vscroll_delay).w			; JAM: Has the delay gone long enough?
+		bcs.s	Sonic_ResetScr_Part2			; JAM: If not, branch
+		move.w	#$78,(vscroll_delay).w			; JAM: Cap vertical scroll delay counter
 		
 @NoSpindash:	
 		cmpi.w	#camera_y_shift_up,(v_camera_y_shift).w	; $C8
@@ -394,12 +392,12 @@ Sonic_Duck:
 		beq.s	Sonic_ResetScr				; if not, branch
 		move.b	#id_Duck,ost_anim(a0)			; use "ducking" animation
 
-		btst 	#bit_Spindash,(v_options).w		; JAM: Handle look down delay
-		bne.s	@NoSpindash
-		addq.w	#1,vscroll_delay.w
-		cmpi.w	#$78,vscroll_delay.w
-		bcs.s	Sonic_ResetScr_Part2
-		move.w	#$78,vscroll_delay.w
+		btst 	#bit_Spindash,(v_options).w		; JAM: Is the spindash eanbled?
+		bne.s	@NoSpindash				; JAM: If not, branch
+		addq.w	#1,(vscroll_delay).w			; JAM: Increment vertical scroll delay counter
+		cmpi.w	#$78,(vscroll_delay).w			; JAM: Has the delay gone long enough?
+		bcs.s	Sonic_ResetScr_Part2			; JAM: If not, branch
+		move.w	#$78,(vscroll_delay).w			; JAM: Cap vertical scroll delay counter
 		
 @NoSpindash:
 		cmpi.w	#camera_y_shift_down,(v_camera_y_shift).w ; 8
@@ -409,7 +407,7 @@ Sonic_Duck:
 ; ===========================================================================
 
 Sonic_ResetScr:
-		move.w	#0,vscroll_delay.w			; JAM: Reset VScroll delay
+		move.w	#0,(vscroll_delay).w			; JAM: Reset vertical scroll delay
 	
 Sonic_ResetScr_Part2:
 		cmpi.w	#camera_y_shift_default,(v_camera_y_shift).w ; is screen in its default position? ($60)
@@ -554,10 +552,10 @@ Sonic_MoveLeft:
 		bclr	#status_xflip_bit,ost_status(a0)	; make Sonic face right
 		play.w	1, jsr, sfx_Skid			; play stopping sound
 
-		btst 	#bit_Spindash,(v_options).w		; JAM: Display skid dust
-		bne.s	@exit
-		move.b	#6,spindash_obj+ost_routine.w
-		move.b	#$C,spindash_obj+ost_frame.w
+		btst 	#bit_Spindash,(v_options).w		; JAM: Is the spindash enabled?
+		bne.s	@exit					; JAM: If not, branch
+		move.b	#6,(spindash_obj+ost_routine).w		; JAM: Display skid dust
+		move.b	#$C,(spindash_obj+ost_frame).w		; JAM
 
 	@exit:
 		rts
@@ -603,10 +601,10 @@ Sonic_MoveRight:
 		bset	#status_xflip_bit,ost_status(a0)	; make Sonic face left
 		play.w	1, jsr, sfx_Skid			; play stopping sound
 
-		btst 	#bit_Spindash,(v_options).w		; JAM: Display skid dust
-		bne.s	@exit
-		move.b	#6,spindash_obj+ost_routine.w
-		move.b	#$C,spindash_obj+ost_frame.w
+		btst 	#bit_Spindash,(v_options).w		; JAM: Is the spindash enabled?
+		bne.s	@exit					; JAM: If not, branch
+		move.b	#6,(spindash_obj+ost_routine).w		; JAM: Display skid dust
+		move.b	#$C,(spindash_obj+ost_frame).w		; JAM
 
 	@exit:
 		rts
@@ -1374,7 +1372,7 @@ Sonic_ResetOnFloor:
 	@no_jump:
 		move.b	#0,ost_sonic_jump(a0)
 		move.w	#0,(v_enemy_combo).w			; reset counter for points for breaking multiple enemies
-		move.w	#0,vscroll_delay.w	; JAM: Reset VScroll delay
+		move.w	#0,(vscroll_delay).w			; JAM: Reset vertical scroll delay
 		rts
 
 ; ---------------------------------------------------------------------------

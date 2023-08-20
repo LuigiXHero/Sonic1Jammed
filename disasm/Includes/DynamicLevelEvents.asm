@@ -84,7 +84,7 @@ DLE_GHZ1:
 		bcs.s	@exit					; branch if camera is left of $1780
 
 		move.w	#$400,(v_boundary_bottom_next).w	; set lower y-boundary
-		move.w	#$400,(v_boundary_bottom).w		; JAM Fix - set lower y-boundary
+		move.w	#$400,(v_boundary_bottom).w		; JAM: force lower y-boundary
 
 	@exit:
 		rts	

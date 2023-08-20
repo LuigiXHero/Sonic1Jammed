@@ -181,8 +181,8 @@ React_Monitor:
 React_Enemy:
 		tst.b	(v_invincibility).w			; is Sonic invincible?
 		bne.s	@donthurtsonic				; if yes, branch
-		cmpi.b	#id_Spindash,ost_anim(a0)		; is Sonic Spin Dashing?
-		beq.w	@donthurtsonic				; if yes, branch
+		cmpi.b	#id_Spindash,ost_anim(a0)		; JAM: Is Sonic spindashing?
+		beq.w	@donthurtsonic				; JAM: If so, branch
 		cmpi.b	#id_Roll,ost_anim(a0)			; is Sonic rolling/jumping?
 		bne.w	React_ChkHurt				; if not, branch
 
@@ -317,7 +317,6 @@ HurtSonic:
 		neg.w	ost_x_vel(a0)				; if Sonic is right of the object, reverse
 
 	@isleft:
-		move.b	#0,ost_sonic_spindash(a0)		; clear Spin Dash flag
 		move.w	#0,ost_inertia(a0)
 		move.b	#id_Hurt,ost_anim(a0)
 		move.w	#sonic_flash_time,ost_sonic_flash_time(a0) ; set temp invincible time to 2 seconds

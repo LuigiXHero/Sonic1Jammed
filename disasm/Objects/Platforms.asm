@@ -63,10 +63,10 @@ Plat_Main:	; Routine 0
 
 	@setframe:
 		move.b	d1,ost_frame(a0)			; set frame to d1
-		cmpi.b	#$D,ost_subtype(a0)			; SonicJam new subtype for GHZ2 Normal
-		bne.s	Plat_Solid				; ^
-		move.b	#$28,ost_displaywidth(a0)		; ^
-		move.b	#3,ost_priority(a0)			; ^
+		cmpi.b	#$D,ost_subtype(a0)			; JAM: Is this the wider stationary platform?
+		bne.s	Plat_Solid				; JAM: If not, branch
+		move.b	#$28,ost_displaywidth(a0)		; JAM: If so, extend hitbox
+		move.b	#3,ost_priority(a0)			; JAM: Also give higher drawing priority
 
 Plat_Solid:	; Routine 2
 		tst.b	ost_plat_y_nudge(a0)			; has platform dipped from being stood on?
@@ -145,7 +145,7 @@ Plat_Move:
 		ptr Plat_Type_UpDown_Large			; $A
 		ptr Plat_Type_UpDown_Slow			; $B
 		ptr Plat_Type_UpDown_Slow_Rev			; $C
-		ptr Plat_Type_Still				; $D SonicJam Normal mode GHZ2
+		ptr Plat_Type_Still				; $D JAM: Add new subtype
 ; ===========================================================================
 
 ; Type 0

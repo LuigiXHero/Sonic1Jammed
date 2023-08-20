@@ -113,11 +113,11 @@ BFZ_Main:	; Routine 0
 	@fail2:
 		move.w	#id_BFZ_Eggman_Wait,ost_fz_mode(a0)	; goto BFZ_Eggman_Wait next
 		move.b	#hitcount_fz,ost_col_property(a0)	; set number of hits to 8
-		cmpi.b	#1,(v_difficulty).w			; easy mode?
-		bne.s	@noteasy				; if not, branch
-		move.b	#hitcount_fz_easy,ost_col_property(a0)	; set number of hits to 3
+		cmpi.b	#1,(v_difficulty).w			; JAM: easy mode?
+		bne.s	@not_easy				; JAM: if not, branch
+		move.b	#hitcount_fz_easy,ost_col_property(a0)	; JAM: set number of hits to 3
 
-	@noteasy:
+	@not_easy:
 		move.w	#-1,ost_fz_cylinder_flag(a0)		; set crushers to activate
 
 BFZ_Eggman:	; Routine 2
@@ -175,9 +175,19 @@ BFZ_Eggman_Crush:
 		move.w	#-1,ost_cylinder_eggman(a1)
 		move.w	ost_fz_cylinder_child(a0,d1.w),d2
 		movea.l	d2,a1					; a1 = OST address for second cylinder
-		move.b	#1,ost_cylinder_flag(a1)		; activate that cylinder
+
+		moveq	#1,d0					; JAM: activate that cylinder
+		moveq	#2-1,d1					; JAM: 2 cylinders
+		cmpi.b	#1,(v_difficulty).w			; JAM: easy mode?
+		bne.s	@not_easy				; JAM: if not, branch
+		moveq	#0,d0					; JAM: if so, DON'T activate that cylinder
+		moveq	#1-1,d1					; JAM: 1 cylinder
+
+	@not_easy:
+		move.b	d0,ost_cylinder_flag(a1)		; JAM: set cylinder activation
 		move.w	#0,ost_cylinder_eggman(a1)
-		move.w	#1,ost_fz_phase_state(a0)
+		move.w	d1,ost_fz_phase_state(a0)		; JAM: set number of cylinders
+		
 		clr.b	ost_fz_flash_num(a0)
 		play.w	1, jsr, sfx_Rumbling			; play rumbling sound
 

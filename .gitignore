@@ -1,0 +1,26 @@
+!*.exe
+!*.dll
+*.log
+*.gen
+s1rev00.bin
+s1rev01.bin
+sh.exe.stackdump
+*.lst
+*.log
+main.sym
+main.symcmp
+output.txt
+/.project
+colorgen.py
+*~
+disasm/errors.txt
+disasm/sound/errors.txt
+disasm/SonLVL INIs/dllcache/
+disasm/AMPS/.Data
+disasm/AMPS/z80.bat
+disasm/AMPS/merge.asm
+disasm/AMPS/fix.asm
+disasm/AMPS/.z80
+disasm/AMPS/._z80
+disasm/AMPS/.z80.kos
+sjbuilt.dat

@@ -1,0 +1,32 @@
+{
+    "Flex": 2,
+    "name": "",
+    "node": "6d24eba5-7aa1-495c-96f8-d32fcdd78866",
+    "objects": [
+        {
+            "uuid": "6d24eba5-7aa1-495c-96f8-d32fcdd78866",
+            "format": "Sonic 1.js",
+            "name": "Sonic",
+            "palettes": [
+                {
+                    "path": "Palettes\\Sonic.bin",
+                    "length": 1
+                }
+            ],
+            "art": {
+                "path": "Graphics\\sonic.bin",
+                "compression": "Uncompressed",
+                "offset": 0
+            },
+            "mappings": {
+                "path": "SonLVL INI Files\\mappings\\Sonic.asm",
+                "label": ""
+            },
+            "dplcs": {
+                "enabled": true,
+                "path": "SonLVL INI Files\\mappings\\Sonic DPLC.asm",
+                "label": ""
+            }
+        }
+    ]
+}

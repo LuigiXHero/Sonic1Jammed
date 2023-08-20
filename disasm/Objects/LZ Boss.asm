@@ -38,6 +38,11 @@ BLZ_Main:	; Routine 0
 		move.w	ost_y_pos(a0),ost_blz_parent_y_pos(a0)
 		move.b	#id_col_24x24,ost_col_type(a0)
 		move.b	#hitcount_lz,ost_col_property(a0)	; set number of hits to 8
+		cmpi.b	#1,(v_difficulty).w			; JAM: easy mode?
+		bne.s	@not_easy				; JAM: if not, branch
+		move.b	#hitcount_lz_easy,ost_col_property(a0)	; JAM: set number of hits to 3
+
+	@not_easy:
 		move.b	#4,ost_priority(a0)
 		lea	BLZ_ObjData(pc),a2			; get data for routine number & animation
 		movea.l	a0,a1					; replace current object with 1st in list

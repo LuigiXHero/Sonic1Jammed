@@ -87,7 +87,11 @@ Plasma_MakeBalls:
 		adda.w	d0,a2
 		addq.w	#4,ost_plasma_x_target(a0)
 		clr.w	ost_plasma_count_top(a0)		; initialise plasma ball count
-		moveq	#4-1,d2					; number of plasma balls
+		
+		moveq	#4-1,d2					; JAM: 4 plasma balls
+		cmpi.b	#1,(v_difficulty).w			; JAM: easy mode?
+		bne.s	@loop					; JAM: if not, branch
+		move.b	#3-1,d2					; JAM: 3 plasma balls
 
 	@loop:
 		jsr	(FindNextFreeObj).l			; find free OST slot
@@ -108,12 +112,20 @@ Plasma_MakeBalls:
 		move.l	a0,ost_plasma_parent(a1)		; save launcher OST to plasma ball OST
 		jsr	(RandomNumber).l			; d0 = random number
 		move.w	ost_plasma_count_top(a0),d1		; id of plasma ball (0-3)
-		muls.w	#-$4F,d1				; avg distance between balls
+
+		moveq	#-$4F,d3				; JAM: avg distance between balls
+		cmpi.b	#1,(v_difficulty).w			; JAM: easy mode?
+		bne.s	@not_easy				; JAM: if not, branch
+		moveq	#-$69,d3				; JAM: spread out more due to less balls
+
+	@not_easy:
+		muls.w	d3,d1					; JAM: apply distance
 		addi.w	#$2578,d1				; add initial x pos
 		andi.w	#$1F,d0
 		subi.w	#$10,d0
 		add.w	d1,d0					; add random number between -16 and 15
 		move.w	d0,ost_plasma_x_target(a1)		; set x pos for plasma ball to stop
+		
 		addq.w	#1,ost_plasma_count_top(a0)		; next plasma ball
 		move.w	ost_plasma_count_top(a0),ost_plasma_count_any(a0)
 		dbf	d2,@loop				; repeat sequence 3 more times

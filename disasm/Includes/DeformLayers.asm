@@ -843,23 +843,23 @@ UpdateCamera_X:
 		rts
 ; ===========================================================================
 UpdateCamera_X_2:
-		lea	hscroll_delay.w,a5	; JAM: Horizontal scroll delay
-		lea	(v_sonic_pos_tracker).w,a6
-		move.w	(a5),d1			; should scrolling be delayed?
-		beq.s	@ScrollNotDelayed	; if not, branch
-		subi.w	#$100,d1		; reduce delay value
-		move.w	d1,(a5)
-		moveq	#0,d1
-		move.b	(a5),d1			; get delay value
-		lsl.b	#2,d1			; multiply by 4, the size of a position buffer entry
-		addq.b	#4,d1
-		move.w	v_sonic_pos_tracker_num.w,d0		; get current position buffer index
-		sub.b	d1,d0
-		move.w	(a6,d0.w),d0		; get Sonic's position a certain number of frames ago
-		andi.w	#$3FFF,d0
-		bra.s	@CheckIfShouldScroll	; use that value for scrolling
+		lea	(hscroll_delay).w,a5			; JAM: Get horizontal scroll delay
+		lea	(v_sonic_pos_tracker).w,a6		; JAM: Get position buffer
+		move.w	(a5),d1					; JAM: Should scrolling be delayed?
+		beq.s	@not_delayed				; JAM: If not, branch
+		subi.w	#$100,d1				; JAM: Reduce delay value
+		move.w	d1,(a5)					; JAM
+		moveq	#0,d1					; JAM: Get delay value as position buffer offset
+		move.b	(a5),d1					; JAM
+		lsl.b	#2,d1					; JAM
+		addq.b	#4,d1					; JAM
+		move.w	v_sonic_pos_tracker_num.w,d0		; JAM: Offset with current position buffer index
+		sub.b	d1,d0					; JAM
+		move.w	(a6,d0.w),d0				; JAM: Get Sonic's delayed position
+		andi.w	#$3FFF,d0				; JAM
+		bra.s	@CheckIfShouldScroll			; JAM: Use that value for scrolling
 
-@ScrollNotDelayed:
+@not_delayed:
 		move.w	(v_ost_player+ost_x_pos).w,d0
 
 @CheckIfShouldScroll:

@@ -23,9 +23,8 @@ Obj8D_Init:
 		ori.b	#4,ost_render(a0)
 		move.b	#1,ost_priority(a0)
 		move.b	#$10,ost_displaywidth(a0)
-		move.w	#$7A0,ost_tile(a0)			; CHG: Store spindash art in Genesis VRAM
-		move.w	#$FFFFD000,$3E(a0)
-		move.w	#$7A0*$20,$3C(a0)			; CHG: Store spindash art in Genesis VRAM
+		move.w	#$7A0,ost_tile(a0)
+		move.w	#v_ost_player,$3E(a0)
 ; ---------------------------------------------------------------------------
 
 Obj8D_Main:
@@ -45,27 +44,27 @@ Obj8D_DisplayModes:
 ; ---------------------------------------------------------------------------
 
 Obj8D_MdSpindashDust:
-		cmpi.b	#4,$24(a2)
+		cmpi.b	#4,ost_routine(a2)
 		bhs.s	Obj8D_ResetDisplayMode
-		tst.b	$39(a2)
+		tst.b	ost_sonic_spindash(a2)
 		beq.s	Obj8D_ResetDisplayMode
-		move.w	8(a2),8(a0)
-		move.w	$C(a2),$C(a0)
-		move.b	$22(a2),$22(a0)
-		andi.b	#1,$22(a0)
-		tst.b	$1D(a0)
+		move.w	ost_x_pos(a2),ost_x_pos(a0)
+		move.w	ost_y_pos(a2),ost_y_pos(a0)
+		move.b	ost_status(a2),ost_status(a0)
+		andi.b	#1,ost_status(a0)
+		tst.b	ost_anim_restart(a0)
 		bne.s	Obj8D_Display
-		andi.w	#$7FFF,2(a0)
-		tst.w	2(a2)
+		andi.w	#$7FFF,ost_tile(a0)
+		tst.w	ost_tile(a2)
 		bpl.s	Obj8D_Display
-		ori.w	#$8000,2(a0)
+		ori.w	#$8000,ost_tile(a0)
 ; ---------------------------------------------------------------------------
 
 Obj8D_MdSkidDust:
 Obj8D_Display:
-		lea	Ani_Obj8D,a1
+		lea	Ani_Obj8D(pc),a1
 		jsr	AnimateSprite
-		bsr.w	Obj8D_LoadDustOrSplashArt	; CHG: Store spindash art in Genesis VRAM
+		bsr.w	Obj8D_LoadDustOrSplashArt
 		jmp	(DisplaySprite).l
 ; ---------------------------------------------------------------------------
 
@@ -75,12 +74,12 @@ Obj8D_ResetDisplayMode:
 ; ---------------------------------------------------------------------------
 
 Obj8D_Delete:
-		bra.w	DeleteObject
+		jmp	DeleteObject
 ; ---------------------------------------------------------------------------
 
 Obj8D_CheckSkid:
 		movea.w	$3E(a0),a2	; a2=character
-		cmpi.b	#$D,$1C(a2)	; SonAni_Stop
+		cmpi.b	#$D,ost_anim(a2); SonAni_Stop
 		beq.s	Obj8D_SkidDust
 		move.b	#2,ost_routine(a0)
 		move.b	#0,$32(a0)
@@ -89,36 +88,32 @@ Obj8D_CheckSkid:
 
 Obj8D_SkidDust:
 		subq.b	#1,$32(a0)
-		bpl.s	loc_1DEE0
+		bpl.s	Obj8D_LoadDustOrSplashArt
 		move.b	#3,$32(a0)
 		bsr.w	SingleObjLoad
-		bne.s	loc_1DEE0
-		move.b	0(a0),0(a1)	; load Obj8D
-		move.w	8(a2),8(a1)
-		move.w	$C(a2),$C(a1)
-		addi.w	#$10,$C(a1)
-		move.b	#0,$22(a1)
-		move.b	#3,$1C(a1)
-		addq.b	#2,$24(a1)
-		move.l	4(a0),4(a1)
-		move.b	1(a0),1(a1)
-		move.b	#1,$18(a1)
-		move.b	#4,$19(a1)
-		move.w	2(a0),2(a1)
+		bne.s	Obj8D_LoadDustOrSplashArt
+		move.b	ost_id(a0),ost_id(a1)	; load Obj8D
+		move.w	ost_x_pos(a2),ost_x_pos(a1)
+		move.w	ost_y_pos(a2),ost_y_pos(a1)
+		addi.w	#$10,ost_y_pos(a1)
+		move.b	#0,ost_status(a1)
+		move.b	#3,ost_anim(a1)
+		addq.b	#2,ost_routine(a1)
+		move.l	ost_mappings(a0),ost_mappings(a1)
+		move.b	ost_render(a0),ost_render(a1)
+		move.b	#1,ost_priority(a1)
+		move.b	#4,ost_displaywidth(a1)
+		move.w	ost_tile(a0),ost_tile(a1)
 		move.w	$3E(a0),$3E(a1)
-		andi.w	#$7FFF,2(a1)
-		tst.w	2(a2)
-		bpl.s	loc_1DEE0
-		ori.w	#$8000,2(a1)
-
-loc_1DEE0:
-		; CHG: Store spindash art in Genesis VRAM
+		andi.w	#$7FFF,ost_tile(a1)
+		tst.w	ost_tile(a2)
+		bpl.s	Obj8D_LoadDustOrSplashArt
+		ori.w	#$8000,ost_tile(a1)
 ; ---------------------------------------------------------------------------
 
 Obj8D_LoadDustOrSplashArt:
-		; CHG: Store spindash art in Genesis VRAM
 		moveq	#0,d0
-		move.b	$1A(a0),d0
+		move.b	ost_frame(a0),d0
 		cmp.b	$30(a0),d0
 		beq.s	locret_1DF36
 		move.b	d0,$30(a0)
@@ -129,7 +124,7 @@ Obj8D_LoadDustOrSplashArt:
 		move.b	(a2)+,d5
 		subq.w	#1,d5
 		bmi.s	locret_1DF36
-		move.w	$3C(a0),d4
+		move.w	#$7A0*$20,d4
 
 @Queue:
 		moveq	#0,d1

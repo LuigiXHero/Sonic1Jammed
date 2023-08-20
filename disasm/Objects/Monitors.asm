@@ -130,13 +130,13 @@ Mon_Solid_Side:
 ; ===========================================================================
 
 Mon_Solid_ChkPush:
-		move.w	ost_inertia(a1),d0			; JAM: Fix not being able to break monitor after spindashing next to it
-		bpl.s	@CheckSpeed
-		neg.w	d0
+		move.w	ost_inertia(a1),d0			; JAM: Get absolute ground speed
+		bpl.s	@CheckSpeed				; JAM
+		neg.w	d0					; JAM
 		
 @CheckSpeed:
-		cmpi.w	#$700,d0
-		bcc.s	Mon_Solid_ClearPush
+		cmpi.w	#$700,d0				; JAM: Is Sonic moving fast (mainly from spindashing)
+		bcc.s	Mon_Solid_ClearPush			; JAM: If so, don't push on the monitor
 
 		btst	#status_pushing_bit,ost_status(a0)	; is monitor being pushed?
 		beq.s	Mon_Animate				; if not, branch

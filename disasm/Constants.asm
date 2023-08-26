@@ -324,14 +324,19 @@ ost_sonic_lock_time:	equ $3E	; time left for locked controls, e.g. after hitting
 
 ; Boss variables
 hitcount_all:		equ 8
+hitcount_all_easy:	equ 8
 hitcount_ghz:		equ hitcount_all
 hitcount_mz:		equ hitcount_all
 hitcount_syz:		equ hitcount_all
 hitcount_lz:		equ hitcount_all
 hitcount_slz:		equ hitcount_all
 hitcount_fz:		equ hitcount_all
-hitcount_lz_easy:	equ 3
-hitcount_fz_easy:	equ 3
+hitcount_ghz_easy:	equ hitcount_all_easy
+hitcount_mz_easy:	equ hitcount_all_easy
+hitcount_syz_easy:	equ hitcount_all_easy
+hitcount_lz_easy:	equ hitcount_all_easy
+hitcount_slz_easy:	equ hitcount_all_easy
+hitcount_fz_easy:	equ hitcount_all_easy
 
 ; Animation flags
 afEnd:		equ $FF	; return to beginning of animation

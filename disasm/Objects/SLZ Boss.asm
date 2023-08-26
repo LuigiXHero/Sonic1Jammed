@@ -44,6 +44,11 @@ BSLZ_Main:
 		move.w	ost_y_pos(a0),ost_bslz_parent_y_pos(a0)
 		move.b	#id_col_24x24,ost_col_type(a0)
 		move.b	#hitcount_slz,ost_col_property(a0)	; set number of hits to 8
+		cmpi.b	#1,(v_difficulty).w			; JAM: easy mode?
+		bne.s	@not_easy				; JAM: if not, branch
+		move.b	#hitcount_slz_easy,ost_col_property(a0)	; JAM: set number of hits to 3
+
+	@not_easy:
 		lea	BSLZ_ObjData(pc),a2			; get data for routine number, animation & priority
 		movea.l	a0,a1					; replace current object with 1st in list
 		moveq	#3,d1					; 3 additional objects

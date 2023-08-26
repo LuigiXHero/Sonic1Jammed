@@ -60,9 +60,9 @@ BGHZ_Main:	; Routine 0
 		move.w	ost_y_pos(a0),ost_bghz_parent_y_pos(a0)
 		move.b	#id_col_24x24,ost_col_type(a0)
 		move.b	#hitcount_ghz,ost_col_property(a0)	; set number of hits to 8
-		cmpi.b	#1,(v_difficulty).w			; JAM: easy mode?
-		bne.s	BGHZ_ShipMain				; JAM: if not, branch
-		move.b	#hitcount_ghz_easy,ost_col_property(a0)	; JAM: set number of hits to 3
+		cmpi.b	#1,(v_difficulty).w			; EXTRA: easy mode?
+		bne.s	BGHZ_ShipMain				; EXTRA: if not, branch
+		move.b	#hitcount_ghz_easy,ost_col_property(a0)	; EXTRA: set number of hits to 3
 
 BGHZ_ShipMain:	; Routine 2
 		moveq	#0,d0

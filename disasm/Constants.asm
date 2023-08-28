@@ -324,7 +324,7 @@ ost_sonic_lock_time:	equ $3E	; time left for locked controls, e.g. after hitting
 
 ; Boss variables
 hitcount_all:		equ 8
-hitcount_all_easy:	equ 8
+hitcount_all_easy:	equ 3
 hitcount_ghz:		equ hitcount_all
 hitcount_mz:		equ hitcount_all
 hitcount_syz:		equ hitcount_all

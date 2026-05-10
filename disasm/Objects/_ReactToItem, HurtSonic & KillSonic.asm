@@ -252,7 +252,7 @@ Enemy_Points:	dc.w 100/10
 React_Caterkiller:
 		bset	#status_broken_bit,ost_status(a1)
 
-		movea.l	ost_sonic_jump(a1),a2			; JAM: Fix getting hurt by Caterkiller when killing it at a high speed
+		movea.l	ost_cat_parent(a1),a2			; JAM: Fix getting hurt by Caterkiller when killing it at a high speed
 		cmpi.b	#$27,ost_id(a2)
 		beq.s	React_ChkHurt_isflashing
 
